@@ -26,6 +26,32 @@
       content-class="bg-grey-2"
     >
       <q-list>
+        <!-- <q-item-label header="Navigation"></q-item-label> -->
+        <!-- <q-item
+          clickable
+          to="/">
+          <q-item-section avatar>
+            <q-icon name="list" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>To Do</q-item-label>
+          </q-item-section>
+        </q-item> -->
+
+        <q-item
+          clickable
+          v-for="menuItem in menuItems"
+          :key="menuItem.index"
+          :to="menuItem.route">
+          <q-item-section avatar>
+            <q-icon :name="menuItem.icon" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{menuItem.name}}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+      <!-- <q-list>
         <q-item-label header>Essential Links</q-item-label>
         <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
           <q-item-section avatar>
@@ -81,7 +107,7 @@
             <q-item-label caption>@QuasarFramework</q-item-label>
           </q-item-section>
         </q-item>
-      </q-list>
+      </q-list> -->
     </q-drawer>
 
     <q-page-container>
@@ -97,7 +123,14 @@ export default {
   name: 'MyLayout',
   data () {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop
+      leftDrawerOpen: this.$q.platform.is.desktop,
+      menuItems: [
+        {
+          route: '/',
+          icon: 'list',
+          name: 'ToDo'
+        }
+      ]
     }
   },
   methods: {
