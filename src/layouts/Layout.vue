@@ -1,38 +1,48 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-        >
-          <q-icon name="menu" />
-        </q-btn>
-
-        <q-toolbar-title>
-          Quasar App
+        <q-toolbar-title class="absolute-center">
+          Awesome ToDo
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      bordered
-      content-class="bg-grey-2"
-    >
-      <q-list>
-        <q-item-label header>Navigation</q-item-label>
-        <q-item
-          clickable
+    <q-footer>
+      <!-- <q-toolbar class="glossy">
+        <q-toolbar-title>Footer</q-toolbar-title>
+      </q-toolbar>-->
+      Footer
+      <q-tabs>
+        <q-route-tab
           exact
+          ripple
           v-for="menuItem in menuItems"
           :key="menuItem.index"
-          :to="menuItem.route">
+          :to="menuItem.route"
+          :name="menuItem.name"
+          :icon="menuItem.icon"
+          :label="menuItem.name"
+        />
+      </q-tabs>
+    </q-footer>
+
+    <q-drawer
+      v-model="leftDrawerOpen"
+      :breakpoint="767"
+      :width="250"
+      bordered
+      content-class="bg-primary">
+      <q-list dark>
+        <q-item-label header>Navigation</q-item-label>
+        <q-item
+          v-for="menuItem in menuItems"
+          :key="menuItem.index"
+          :to="menuItem.route"
+          clickable
+          exact
+          class="text-grey-4"
+        >
           <q-item-section avatar>
             <q-icon :name="menuItem.icon" />
           </q-item-section>
@@ -50,32 +60,57 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
+import { openURL } from "quasar";
 
 export default {
-  name: 'MyLayout',
-  data () {
+  name: "MyLayout",
+  data() {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
       menuItems: [
         {
-          route: '/',
-          icon: 'list',
-          name: 'ToDo'
+          route: "/",
+          icon: "list",
+          name: "ToDo"
         },
         {
-          route: '/settings',
-          icon: 'settings',
-          name: 'Settings'
+          route: "/settings",
+          icon: "settings",
+          name: "Settings"
         }
       ]
-    }
+    };
   },
   methods: {
     openURL
   }
-}
+};
 </script>
 
-<style>
+<style lang="scss">
+  /* 
+    In order to hide the footer for small screens,
+    this media query is used to identify elements
+    with the "q-footer" class and hide it from view.
+  */
+  @media screen and (min-width: 768px) {
+    .q-footer {
+      display: none
+    }
+  }
+
+  /*
+    Since the background color of the navigation menu is a "dark" color,
+    the default color for the navitaion menu's list items 
+    was changed to a grey-ish color to be visible. This left the
+    router-link active color as a blue that can't be seen,
+    so the color of the class applied to a router-link item
+    in the navigation menu is changed to white so there's contrast 
+    between selected and unselected items in the menu.
+  */
+  .q-drawer {
+    .q-router-link--exact-active {
+      color: white !important;
+    }
+  }
 </style>
