@@ -10,5 +10,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.text-strikethrough {
+  text-decoration: line-through;
+}
 </style>
