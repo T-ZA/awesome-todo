@@ -12,7 +12,6 @@
       <!-- <q-toolbar class="glossy">
         <q-toolbar-title>Footer</q-toolbar-title>
       </q-toolbar>-->
-      Footer
       <q-tabs>
         <q-route-tab
           exact
@@ -88,7 +87,7 @@ export default {
 </script>
 
 <style lang="scss">
-  /* 
+  /*
     In order to hide the footer for small screens,
     this media query is used to identify elements
     with the "q-footer" class and hide it from view.
@@ -101,11 +100,11 @@ export default {
 
   /*
     Since the background color of the navigation menu is a "dark" color,
-    the default color for the navitaion menu's list items 
+    the default color for the navitaion menu's list items
     was changed to a grey-ish color to be visible. This left the
     router-link active color as a blue that can't be seen,
     so the color of the class applied to a router-link item
-    in the navigation menu is changed to white so there's contrast 
+    in the navigation menu is changed to white so there's contrast
     between selected and unselected items in the menu.
   */
   .q-drawer {
