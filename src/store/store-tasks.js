@@ -11,13 +11,13 @@ const state = {
       name: 'Task 2',
       completed: false,
       dueDate: '08/15/2019',
-      dueTime: '00:00'
+      dueTime: '06:00'
     },
     'ID3' : {
       name: 'Task 3',
       completed: false,
       dueDate: '08/15/2019',
-      dueTime: '00:00'
+      dueTime: '12:00'
     }
   }
   // tasks: [
