@@ -9,9 +9,6 @@
     </q-header>
 
     <q-footer>
-      <!-- <q-toolbar class="glossy">
-        <q-toolbar-title>Footer</q-toolbar-title>
-      </q-toolbar>-->
       <q-tabs>
         <q-route-tab
           exact
