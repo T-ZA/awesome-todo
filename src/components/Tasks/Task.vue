@@ -2,11 +2,18 @@
   <q-item
     v-ripple
     clickable
-    @click="task.completed = !task.completed"
-    :class="!task.completed ? 'bg-deep-purple-1' : 'bg-green-1'"
-    >
+    @click="updateTask(
+      {
+        id,
+        updates: {
+          completed: !task.completed
+        }
+      })"
+    :class="!task.completed ? 'bg-deep-purple-1' : 'bg-green-1'">
     <q-item-section side top>
-      <q-checkbox v-model="task.completed" />
+      <q-checkbox
+        class="no-pointer-events"
+        :value="task.completed" />
     </q-item-section>
 
     <q-item-section>
@@ -33,12 +40,45 @@
         </div>
       </div>
     </q-item-section>
+
+    <q-item-section side>
+      <q-btn
+        flat
+        round
+        dense
+        color="negative"
+        icon="delete"
+        @click.stop="promptToDelete(id)">
+        <!--
+          @click.stop prevents the @click method
+          from being fired on the parent component
+          while allowing the button's @click handler
+          to trigger.
+        -->
+      </q-btn>
+    </q-item-section>
   </q-item>
 </template>
 
 <script>
+import { mapActions }  from 'vuex'
+
   export default {
-    props: ['task','id']
+    props: ['task','id'],
+    methods: {
+      ...mapActions('tasks', ['updateTask','deleteTask']),
+      promptToDelete(id) {
+        // Quasar plugin for dialogs
+        this.$q.dialog({
+          title: 'Delete Task',
+          message: 'Would you like to delete this task?',
+          cancel: true,
+          persistent: false
+        }).onOk(() => {
+          this.deleteTask(id)
+        })
+      }
+    }
   }
 </script>
 

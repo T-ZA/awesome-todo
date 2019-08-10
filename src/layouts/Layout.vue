@@ -18,8 +18,7 @@
           :to="menuItem.route"
           :name="menuItem.name"
           :icon="menuItem.icon"
-          :label="menuItem.name"
-        />
+          :label="menuItem.name" />
       </q-tabs>
     </q-footer>
 
@@ -37,8 +36,7 @@
           :to="menuItem.route"
           clickable
           exact
-          class="text-grey-4"
-        >
+          class="text-grey-4">
           <q-item-section avatar>
             <q-icon :name="menuItem.icon" />
           </q-item-section>
