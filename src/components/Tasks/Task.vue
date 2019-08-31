@@ -2,6 +2,7 @@
   <q-item
     v-ripple
     clickable
+    :class="!task.completed ? 'bg-deep-purple-2' : 'bg-green-2'"
     @click="updateTask(
       {
         id,
@@ -9,38 +10,56 @@
           completed: !task.completed
         }
       })"
-    :class="!task.completed ? 'bg-deep-purple-1' : 'bg-green-1'">
-    <q-item-section side top>
+  >
+    <!-- Checkbox to Toggle Comlete -->
+    <q-item-section
+      side
+      top
+    >
       <q-checkbox
         class="no-pointer-events"
-        :value="task.completed" />
+        :value="task.completed"
+      />
     </q-item-section>
 
+    <!-- Task Name -->
     <q-item-section>
       <q-item-label :class="{ 'text-strikethrough' : task.completed }">
-        {{task.name}}
+        {{ task.name }}
       </q-item-label>
     </q-item-section>
 
-    <q-item-section side>
+    <!-- Task Date/Time -->
+    <q-item-section
+      v-if="task.dueDate"
+      side
+    >
       <div class="row">
         <div class="column justify-center">
           <q-icon
             name="event"
             size="18px"
-            class="q-mr-xs" />
+            class="q-mr-xs"
+          />
         </div>
         <div class="column">
-          <q-item-label caption class=" row justify-end">
-            {{task.dueDate}}
+          <q-item-label
+            caption
+            class=" row justify-end"
+          >
+            {{ task.dueDate }}
           </q-item-label>
-          <q-item-label caption class=" row justify-end">
-            <small>{{task.dueTime}}</small>
+          <q-item-label
+            caption
+            class=" row justify-end"
+          >
+            <small>{{ task.dueTime }}</small>
           </q-item-label>
         </div>
       </div>
     </q-item-section>
 
+    <!-- Delete Task button -->
     <q-item-section side>
       <q-btn
         flat
@@ -48,7 +67,8 @@
         dense
         color="negative"
         icon="delete"
-        @click.stop="promptToDelete(id)">
+        @click.stop="promptToDelete(id)"
+      >
         <!--
           @click.stop prevents the @click method
           from being fired on the parent component
@@ -64,7 +84,23 @@
 import { mapActions }  from 'vuex'
 
   export default {
-    props: ['task','id'],
+    props: {
+      task: {
+        type: Object,
+        default: function () {
+          return {
+            name: '',
+            dueDate: '',
+            dueTime: '',
+            completed: false
+          }
+        }
+      },
+      id: {
+        type: String,
+        default: ''
+      }
+    },
     methods: {
       ...mapActions('tasks', ['updateTask','deleteTask']),
       promptToDelete(id) {

@@ -11,14 +11,14 @@
     <q-footer>
       <q-tabs>
         <q-route-tab
-          exact
-          ripple
           v-for="menuItem in menuItems"
           :key="menuItem.index"
+          exact
+          ripple
           :to="menuItem.route"
-          :name="menuItem.name"
           :icon="menuItem.icon"
-          :label="menuItem.name" />
+          :label="menuItem.name"
+        />
       </q-tabs>
     </q-footer>
 
@@ -27,21 +27,25 @@
       :breakpoint="767"
       :width="250"
       bordered
-      content-class="bg-primary">
+      content-class="bg-primary"
+    >
       <q-list dark>
-        <q-item-label header>Navigation</q-item-label>
+        <q-item-label header>
+          Navigation
+        </q-item-label>
         <q-item
           v-for="menuItem in menuItems"
           :key="menuItem.index"
           :to="menuItem.route"
           clickable
           exact
-          class="text-grey-4">
+          class="text-grey-4"
+        >
           <q-item-section avatar>
             <q-icon :name="menuItem.icon" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>{{menuItem.name}}</q-item-label>
+            <q-item-label>{{ menuItem.name }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -54,23 +58,23 @@
 </template>
 
 <script>
-import { openURL } from "quasar";
+import { openURL } from 'quasar';
 
 export default {
-  name: "MyLayout",
+  name: 'MyLayout',
   data() {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop,
+      leftDrawerOpen: false,
       menuItems: [
         {
-          route: "/",
-          icon: "list",
-          name: "ToDo"
+          route: '/',
+          icon: 'list',
+          name: 'ToDo'
         },
         {
-          route: "/settings",
-          icon: "settings",
-          name: "Settings"
+          route: '/settings',
+          icon: 'settings',
+          name: 'Settings'
         }
       ]
     };
