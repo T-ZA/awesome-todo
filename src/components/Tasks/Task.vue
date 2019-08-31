@@ -59,24 +59,52 @@
       </div>
     </q-item-section>
 
-    <!-- Delete Task button -->
+
     <q-item-section side>
-      <q-btn
-        flat
-        round
-        dense
-        color="negative"
-        icon="delete"
-        @click.stop="promptToDelete(id)"
-      >
+      <div class="row">
+        <!-- Edit Task button -->
+        <q-btn
+          flat
+          round
+          dense
+          color="primary"
+          icon="edit"
+          @click.stop="showEditTask = true"
+        >
         <!--
           @click.stop prevents the @click method
           from being fired on the parent component
           while allowing the button's @click handler
           to trigger.
         -->
-      </q-btn>
+        </q-btn>
+
+        <!-- Delete Task button -->
+        <q-btn
+          flat
+          round
+          dense
+          color="negative"
+          icon="delete"
+          @click.stop="promptToDelete(id)"
+        >
+        <!--
+          @click.stop prevents the @click method
+          from being fired on the parent component
+          while allowing the button's @click handler
+          to trigger.
+        -->
+        </q-btn>
+      </div>
     </q-item-section>
+
+    <q-dialog v-model="showEditTask">
+      <edit-task
+        :task="task"
+        :task-id="id"
+        @close-edit-task="showEditTask = false"
+      />
+    </q-dialog>
   </q-item>
 </template>
 
@@ -84,6 +112,9 @@
 import { mapActions }  from 'vuex'
 
   export default {
+    components: {
+      'edit-task': require('components/Tasks/Modals/EditTask.vue').default
+    },
     props: {
       task: {
         type: Object,
@@ -99,6 +130,11 @@ import { mapActions }  from 'vuex'
       id: {
         type: String,
         default: ''
+      }
+    },
+    data() {
+      return {
+        showEditTask: false
       }
     },
     methods: {

@@ -37,7 +37,7 @@ import { mapGetters } from 'vuex'
 export default {
   components: {
     'task': require('components/Tasks/Task.vue').default,
-    'add-task': require('components/Tasks/Modals/AddTask.vue').default
+    'add-task': require('components/Tasks/Modals/AddTask.vue').default,
   },
   data() {
     return {
