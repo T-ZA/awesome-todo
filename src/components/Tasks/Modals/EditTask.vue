@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <modal-header>Add Task</modal-header>
+    <modal-header>Edit Task</modal-header>
 
     <q-form @submit.prevent="submitForm">
       <q-card-section>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from 'vuex'
 
 export default {
   components: {
@@ -36,32 +36,48 @@ export default {
     'modal-due-time': require('components/Tasks/Modals/Shared/ModalDueTime.vue').default,
     'modal-buttons': require('components/Tasks/Modals/Shared/ModalButtons.vue').default,
   },
+  props: {
+    'task': {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    'taskId': {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
-      taskToSubmit: {
-        name: '',
-        dueDate: '',
-        dueTime: '',
-        completed: false
-      }
-    };
+      taskToSubmit: {}
+    }
+  },
+  mounted() {
+    this.taskToSubmit = Object.assign({}, this.task)
   },
   methods: {
-    ...mapActions('tasks', ['addTask']),
-    submitForm() {
-      this.submitTask();
-    },
-    submitTask() {
-      this.addTask(this.taskToSubmit);
-      this.$emit('close-add-task');
-    },
+    ...mapActions('tasks', ['updateTask']),
     clearDueDate() {
       this.taskToSubmit.dueDate = ''
       this.taskToSubmit.dueTime = ''
+    },
+    submitForm() {
+      console.log('submitForm')
+      this.submitTask()
+    },
+    submitTask() {
+      this.updateTask({
+        id: this.taskId,
+        updates: this.taskToSubmit
+      })
+      this.$emit('close-edit-task')
     }
-  }
-};
+  },
+
+}
 </script>
 
 <style lang="scss" scoped>
+
 </style>
