@@ -1,18 +1,21 @@
 <template>
   <q-page class="q-pa-md">
-    <!-- Task List -->
-    <q-list
-      v-if="Object.keys(tasks).length"
-      bordered
-      separator
-    >
-      <task
-        v-for="(task, key) in tasks"
-        :id="key"
-        :key="key"
-        :task="task"
-      />
-    </q-list>
+    <!-- Tasks To Do List -->
+    <no-tasks
+      v-if="!Object.keys(tasksToDo).length"
+    />
+
+    <tasks-todo
+      v-else
+      :tasks-to-do="tasksToDo"
+    />
+
+
+    <!-- Task Completed list -->
+    <tasks-completed
+      v-if="Object.keys(tasksCompleted).length"
+      :tasks-completed="tasksCompleted"
+    />
 
     <!-- Add Task button -->
     <div class="absolute-bottom text-center q-mb-lg">
@@ -21,7 +24,7 @@
         color="primary"
         size="24px"
         icon="add"
-        @click="showAddTask = true"
+        @click="$root.$emit('show-add-task')"
       />
     </div>
 
@@ -36,8 +39,10 @@ import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    'task': require('components/Tasks/Task.vue').default,
     'add-task': require('components/Tasks/Modals/AddTask.vue').default,
+    'tasks-todo': require('components/Tasks/TasksToDo.vue').default,
+    'tasks-completed': require('components/Tasks/TasksCompleted.vue').default,
+    'no-tasks': require('components/Tasks/NoTasks.vue').default
   },
   data() {
     return {
@@ -45,8 +50,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('tasks', ['tasks'])
+    ...mapGetters('tasks', ['tasksToDo','tasksCompleted'])
   },
+  mounted() {
+    // Quasar's Global Event Bus can be used to listen to events by name
+    // rather than being from a direct child component.
+    this.$root.$on('show-add-task', () => {
+      this.showAddTask = true
+    })
+  }
 }
 </script>
 

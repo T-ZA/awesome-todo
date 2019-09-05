@@ -36,19 +36,25 @@
     >
       <div class="row">
         <div class="column justify-center">
+          <!-- Event icon -->
           <q-icon
             name="event"
             size="18px"
             class="q-mr-xs"
           />
         </div>
+
+        <!-- Date/Time section -->
         <div class="column">
+          <!-- Date -->
           <q-item-label
             caption
             class=" row justify-end"
           >
             {{ task.dueDate }}
           </q-item-label>
+
+          <!-- Time -->
           <q-item-label
             caption
             class=" row justify-end"
@@ -116,6 +122,7 @@ import { mapActions }  from 'vuex'
       'edit-task': require('components/Tasks/Modals/EditTask.vue').default
     },
     props: {
+      // A single task from the tasks store module to display
       task: {
         type: Object,
         default: function () {
@@ -127,6 +134,7 @@ import { mapActions }  from 'vuex'
           }
         }
       },
+      // The ID of the task
       id: {
         type: String,
         default: ''
