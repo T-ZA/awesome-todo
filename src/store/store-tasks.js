@@ -75,8 +75,25 @@ const actions = {
 
 // Retrieve data from state
 const getters = {
-  tasks: (state) => {
-    return state.tasks
+  tasksToDo: (state) => {
+    let tasks = {}
+    Object.keys(state.tasks).forEach((key) => {
+      let task = state.tasks[key]
+      if (!task.completed) {
+        tasks[key] = task
+      }
+    })
+    return tasks
+  },
+  tasksCompleted: (state) => {
+    let tasks = {}
+    Object.keys(state.tasks).forEach((key) => {
+      let task = state.tasks[key]
+      if (task.completed) {
+        tasks[key] = task
+      }
+    })
+    return tasks
   }
 }
 
