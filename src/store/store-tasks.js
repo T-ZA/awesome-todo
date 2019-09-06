@@ -22,7 +22,8 @@ const state = {
       dueDate: '2019/08/15',
       dueTime: '12:00'
     }
-  }
+  },
+  search: ''
 }
 
 // Synchronous functions to modify state
@@ -51,6 +52,9 @@ const mutations = {
   deleteTask(state, id) {
     // Needed to keep Vuex and Vue in sync
     Vue.delete(state.tasks, id)
+  },
+  setSearch(state, value){
+    state.search = value
   }
 }
 
@@ -70,25 +74,62 @@ const actions = {
   },
   deleteTask({commit}, id) {
     commit('deleteTask', id)
+  },
+  setSearch({commit}, value) {
+    commit('setSearch', value)
   }
 }
 
 // Retrieve data from state
 const getters = {
-  tasksToDo: (state) => {
+  tasksFiltered: (state) => {
+    let tasksFiltered = {}
+
+    // Only filter tasks if there is a search term
+    if (state.search) {
+      // Iterate over state.tasks by key (since its objects)
+      Object.keys(state.tasks).forEach((key) => {
+        // Get the task of the current key
+        let task = state.tasks[key]
+
+        // Include the task in the return object
+        // if its name includes the curretn search term
+        let taskNameLowercase = task.name.toLowerCase()
+        let searchLowercase = state.search.toLowerCase()
+        if (taskNameLowercase.includes(searchLowercase)) {
+          tasksFiltered[key] = task
+        }
+      })
+      return tasksFiltered
+    }
+    return state.tasks
+  },
+  tasksToDo: (state, getters) => {
+    let tasksFiltered = getters.tasksFiltered
     let tasks = {}
-    Object.keys(state.tasks).forEach((key) => {
-      let task = state.tasks[key]
+
+    // Iterate over state.tasks by key (since its objects)
+    Object.keys(tasksFiltered).forEach((key) => {
+      // Get the task of the current key
+      let task = tasksFiltered[key]
+
+      // Include the task in the return object if not complete
       if (!task.completed) {
         tasks[key] = task
       }
     })
     return tasks
   },
-  tasksCompleted: (state) => {
+  tasksCompleted: (state, getters) => {
+    let tasksFiltered = getters.tasksFiltered
     let tasks = {}
-    Object.keys(state.tasks).forEach((key) => {
-      let task = state.tasks[key]
+
+    // Iterate over tasksFiltered by key (since its objects)
+    Object.keys(tasksFiltered).forEach((key) => {
+      // Get the task of the current key
+      let task = tasksFiltered[key]
+
+      // Include the task in the return object if complete
       if (task.completed) {
         tasks[key] = task
       }

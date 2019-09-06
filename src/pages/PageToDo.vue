@@ -1,12 +1,24 @@
 <template>
   <q-page class="q-pa-md">
-    <!-- Tasks To Do List -->
+    <!-- Search Bar -->
+    <div class="row q-mb-lg">
+      <search />
+    </div>
+
+    <!-- No Search Results message -->
+    <div v-if="search && !Object.keys(tasksToDo).length && !Object.keys(tasksCompleted).length">
+      No search results
+    </div>
+
+
+    <!-- All Tasks Completed message -->
     <no-tasks
-      v-if="!Object.keys(tasksToDo).length"
+      v-if="!Object.keys(tasksToDo).length && !search"
     />
 
+    <!-- Tasks To Do List -->
     <tasks-todo
-      v-else
+      v-if="Object.keys(tasksToDo).length"
       :tasks-to-do="tasksToDo"
     />
 
@@ -28,6 +40,7 @@
       />
     </div>
 
+    <!-- Add Task dialog -->
     <q-dialog v-model="showAddTask">
       <add-task @close-add-task="showAddTask = false" />
     </q-dialog>
@@ -35,14 +48,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   components: {
     'add-task': require('components/Tasks/Modals/AddTask.vue').default,
     'tasks-todo': require('components/Tasks/TasksToDo.vue').default,
     'tasks-completed': require('components/Tasks/TasksCompleted.vue').default,
-    'no-tasks': require('components/Tasks/NoTasks.vue').default
+    'no-tasks': require('components/Tasks/NoTasks.vue').default,
+    'search': require('components/Tasks/Tools/Search.vue').default,
   },
   data() {
     return {
@@ -50,7 +64,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('tasks', ['tasksToDo','tasksCompleted'])
+    ...mapGetters('tasks', ['tasksToDo','tasksCompleted']),
+    ...mapState('tasks', ['search'])
   },
   mounted() {
     // Quasar's Global Event Bus can be used to listen to events by name
