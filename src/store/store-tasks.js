@@ -7,13 +7,13 @@ const state = {
     'ID1': {
       name: 'Task 1',
       completed: false,
-      dueDate: '2019/08/15',
+      dueDate: '2019/08/17',
       dueTime: '00:00'
     },
     'ID2': {
       name: 'Task 2',
       completed: false,
-      dueDate: '2019/08/15',
+      dueDate: '2019/08/16',
       dueTime: '06:00'
     },
     'ID3': {
@@ -23,7 +23,8 @@ const state = {
       dueTime: '12:00'
     }
   },
-  search: ''
+  search: '',
+  sort: 'name'
 }
 
 // Synchronous functions to modify state
@@ -55,6 +56,9 @@ const mutations = {
   },
   setSearch(state, value){
     state.search = value
+  },
+  setSort(state, value) {
+    state.sort = value
   }
 }
 
@@ -77,20 +81,47 @@ const actions = {
   },
   setSearch({commit}, value) {
     commit('setSearch', value)
+  },
+  setSort({commit}, value) {
+    commit('setSort', value)
   }
 }
 
 // Retrieve data from state
 const getters = {
-  tasksFiltered: (state) => {
+  tasksSorted: (state) => {
+    let tasksSorted = {}
+    let keysOrdered = Object.keys(state.tasks)
+
+    // Positive - a is placed after b
+    // Negative - b is placed after a
+    // Neither - a and b remain where they are
+    keysOrdered.sort((a,b) => {
+      let taskAProp = state.tasks[a][state.sort].toLowerCase()
+      let taskBProp = state.tasks[b][state.sort].toLowerCase()
+
+      if(taskAProp > taskBProp) return 1
+      else if (taskAProp < taskBProp) return -1
+      else return 0
+    })
+
+    // Add tasks to return object by sorted keys
+    keysOrdered.forEach((key) => {
+      tasksSorted[key] = state.tasks[key]
+    })
+
+    return tasksSorted
+  },
+  tasksFiltered: (state, getters) => {
     let tasksFiltered = {}
+    let tasksSorted = getters.tasksSorted
 
     // Only filter tasks if there is a search term
     if (state.search) {
-      // Iterate over state.tasks by key (since its objects)
-      Object.keys(state.tasks).forEach((key) => {
+      // Iterate over tasksSorted by key (since its objects)
+      Object.keys(tasksSorted).forEach((key) => {
         // Get the task of the current key
-        let task = state.tasks[key]
+        let task = tasksSorted[key]
 
         // Include the task in the return object
         // if its name includes the curretn search term
@@ -102,7 +133,7 @@ const getters = {
       })
       return tasksFiltered
     }
-    return state.tasks
+    return tasksSorted
   },
   tasksToDo: (state, getters) => {
     let tasksFiltered = getters.tasksFiltered
