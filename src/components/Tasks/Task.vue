@@ -1,6 +1,7 @@
 <template>
   <q-item
     v-ripple
+    v-touch-hold:1000.mouse="showEditTaskModal"
     clickable
     :class="!task.completed ? 'bg-deep-purple-2' : 'bg-green-2'"
     @click="updateTask(
@@ -24,9 +25,10 @@
 
     <!-- Task Name -->
     <q-item-section>
-      <q-item-label :class="{ 'text-strikethrough' : task.completed }">
-        {{ task.name }}
-      </q-item-label>
+      <q-item-label
+        :class="{ 'text-strikethrough' : task.completed }"
+        v-html="$options.filters.searchHighlight(task.name, search)"
+      />
     </q-item-section>
 
     <!-- Task Date/Time -->
@@ -51,7 +53,7 @@
             caption
             class=" row justify-end"
           >
-            {{ task.dueDate }}
+            {{ task.dueDate | niceDate }}
           </q-item-label>
 
           <!-- Time -->
@@ -75,7 +77,7 @@
           dense
           color="primary"
           icon="edit"
-          @click.stop="showEditTask = true"
+          @click.stop="showEditTaskModal()"
         >
         <!--
           @click.stop prevents the @click method
@@ -115,11 +117,28 @@
 </template>
 
 <script>
-import { mapActions }  from 'vuex'
+import { mapActions, mapState }  from 'vuex'
+import { date } from 'quasar'
 
   export default {
     components: {
       'edit-task': require('components/Tasks/Modals/EditTask.vue').default
+    },
+    filters: {
+      niceDate(value) {
+        return date.formatDate(value, 'MMM DD, YYYY')
+      },
+      searchHighlight(value, search) {
+        // Make the search term case insensitive (i flag)
+        // and also get all occurrences in a string (g flag)
+        let searchRegExp = new RegExp(search, 'ig')
+        if (search) {
+          return value.replace(searchRegExp, (match) => {
+            return `<span class="bg-yellow-6">${match}</span>`
+          })
+        }
+        return value
+      }
     },
     props: {
       // A single task from the tasks store module to display
@@ -145,6 +164,9 @@ import { mapActions }  from 'vuex'
         showEditTask: false
       }
     },
+    computed: {
+      ...mapState('tasks',['search'])
+    },
     methods: {
       ...mapActions('tasks', ['updateTask','deleteTask']),
       promptToDelete(id) {
@@ -157,6 +179,9 @@ import { mapActions }  from 'vuex'
         }).onOk(() => {
           this.deleteTask(id)
         })
+      },
+      showEditTaskModal() {
+        this.showEditTask = true
       }
     }
   }

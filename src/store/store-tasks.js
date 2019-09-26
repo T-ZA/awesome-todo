@@ -21,7 +21,7 @@ const state = {
       completed: false,
       dueDate: '2019/08/15',
       dueTime: '12:00'
-    }
+    },
   },
   search: '',
   sort: 'name'

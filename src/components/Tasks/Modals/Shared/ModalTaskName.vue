@@ -2,6 +2,7 @@
   <!-- Task Name -->
   <div class="row q-mb-sm">
     <q-input
+      v-select-all
       :value="name"
       outlined
       autofocus
@@ -17,13 +18,17 @@
 </template>
 
 <script>
+import { selectAll } from 'src/directives/directive-select-all'
+
 export default {
+  directives: {
+    'selectAll': selectAll
+  },
   props: {
     name: {
       type: String,
       default: ''
     }
-  },
-
+  }
 }
 </script>
