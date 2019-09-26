@@ -1,50 +1,61 @@
 <template>
-  <q-page class="q-pa-md">
-    <!-- Search Bar -->
-    <div class="row q-mb-lg">
-      <search />
-      <sort />
+  <q-page>
+    <div class="absolute fit column q-pa-md">
+      <!-- Search Bar -->
+      <div class="row q-mb-lg">
+        <search />
+        <sort />
+      </div>
+
+      <!-- No Search Results message -->
+      <div v-if="search && !Object.keys(tasksToDo).length && !Object.keys(tasksCompleted).length">
+        No search results
+      </div>
+
+      <!-- This div is used for positioning the task list components
+         (to do, completed, all tasks message) in the same container
+         so the to do list disappearing will be at the top of the
+         comtainer insterad of the top of the page. -->
+      <q-scroll-area
+        class="relative-position q-scroll-area-tasks"
+      >
+        <!-- All Tasks Completed message -->
+        <no-tasks
+          v-if="!Object.keys(tasksToDo).length && !search"
+        />
+
+        <!-- Tasks To Do List -->
+        <tasks-todo
+          v-if="Object.keys(tasksToDo).length"
+          :tasks-to-do="tasksToDo"
+        />
+
+
+        <!-- Task Completed list -->
+        <tasks-completed
+          v-if="Object.keys(tasksCompleted).length"
+          :tasks-completed="tasksCompleted"
+          class="q-mb-xl"
+        />
+      </q-scroll-area>
+
+      <!-- Add Task button -->
+      <div class="absolute-bottom text-center q-mb-lg no-pointer-events">
+        <q-btn
+          round
+          color="primary"
+          size="24px"
+          icon="add"
+          class="all-pointer-events"
+          @click="$root.$emit('show-add-task')"
+        />
+      </div>
+
+      <!-- Add Task dialog -->
+      <q-dialog v-model="showAddTask">
+        <add-task @close-add-task="showAddTask = false" />
+      </q-dialog>
     </div>
-
-    <!-- No Search Results message -->
-    <div v-if="search && !Object.keys(tasksToDo).length && !Object.keys(tasksCompleted).length">
-      No search results
-    </div>
-
-
-    <!-- All Tasks Completed message -->
-    <no-tasks
-      v-if="!Object.keys(tasksToDo).length && !search"
-    />
-
-    <!-- Tasks To Do List -->
-    <tasks-todo
-      v-if="Object.keys(tasksToDo).length"
-      :tasks-to-do="tasksToDo"
-    />
-
-
-    <!-- Task Completed list -->
-    <tasks-completed
-      v-if="Object.keys(tasksCompleted).length"
-      :tasks-completed="tasksCompleted"
-    />
-
-    <!-- Add Task button -->
-    <div class="absolute-bottom text-center q-mb-lg">
-      <q-btn
-        round
-        color="primary"
-        size="24px"
-        icon="add"
-        @click="$root.$emit('show-add-task')"
-      />
-    </div>
-
-    <!-- Add Task dialog -->
-    <q-dialog v-model="showAddTask">
-      <add-task @close-add-task="showAddTask = false" />
-    </q-dialog>
   </q-page>
 </template>
 
@@ -80,5 +91,8 @@ export default {
 </script>
 
 <style>
-
+.q-scroll-area-tasks {
+  display: flex;
+  flex-grow: 1;
+}
 </style>

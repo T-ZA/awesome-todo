@@ -1,21 +1,27 @@
 <template>
-  <div>
-    <list-header :bg-color="'bg-secondary'">
-      Todo
-    </list-header>
+  <transition
+    appear
+    enter-active-class="animated zoomIn"
+    leave-active-class="animated zoomOut absolute-top"
+  >
+    <div>
+      <list-header :bg-color="'bg-secondary'">
+        Todo
+      </list-header>
 
-    <q-list
-      bordered
-      separator
-    >
-      <task
-        v-for="(task, key) in tasksToDo"
-        :id="key"
-        :key="key"
-        :task="task"
-      />
-    </q-list>
-  </div>
+      <q-list
+        bordered
+        separator
+      >
+        <task
+          v-for="(task, key) in tasksToDo"
+          :id="key"
+          :key="key"
+          :task="task"
+        />
+      </q-list>
+    </div>
+  </transition>
 </template>
 
 <script>
