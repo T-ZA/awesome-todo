@@ -4,8 +4,14 @@
     enter-active-class="animated zoomIn"
     leave-active-class="animated zoomOut"
   >
-    <div class="q-mt-lg">
-      <list-header :bg-color="'bg-positive'">
+    <!--  Display the gap between the To Do tasks and Completed tasks
+          when the show tasks in one list setting is disabled (since this
+          would mean that the tasks have separate columns) -->
+    <div :class="{ 'q-mt-lg' : !settings.showTasksInOneList }">
+      <list-header
+        v-if="!settings.showTasksInOneList"
+        :bg-color="'bg-positive'"
+      >
         Completed
       </list-header>
 
@@ -25,6 +31,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     components: {
       'task': require('components/Tasks/Task.vue').default,
@@ -39,6 +47,9 @@
         }
       }
     },
+    computed: {
+      ...mapGetters('settings', ['settings'])
+    }
   }
 </script>
 

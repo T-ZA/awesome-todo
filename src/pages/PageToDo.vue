@@ -21,7 +21,7 @@
       >
         <!-- All Tasks Completed message -->
         <no-tasks
-          v-if="!Object.keys(tasksToDo).length && !search"
+          v-if="!Object.keys(tasksToDo).length && !search && !settings.showTasksInOneList"
         />
 
         <!-- Tasks To Do List -->
@@ -78,6 +78,7 @@ export default {
   },
   computed: {
     ...mapGetters('tasks', ['tasksToDo','tasksCompleted']),
+    ...mapGetters('settings', ['settings']),
     ...mapState('tasks', ['search'])
   },
   mounted() {

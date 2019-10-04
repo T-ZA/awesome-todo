@@ -59,13 +59,14 @@ module.exports = function(ctx) {
         'QForm',
         'QBanner',
         'QSelect',
-        'QScrollArea'
+        'QScrollArea',
+        'QToggle'
       ],
 
       directives: ['Ripple','ClosePopup','TouchHold'],
 
       // Quasar plugins
-      plugins: ['Notify','Dialog']
+      plugins: ['Notify','Dialog','LocalStorage']
     },
 
     supportIE: false,
