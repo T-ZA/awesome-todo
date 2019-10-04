@@ -1,13 +1,24 @@
 <template>
   <q-layout view="hHh lpR fFf">
+    <!-- Page Header -->
     <q-header elevated>
       <q-toolbar>
         <q-toolbar-title class="absolute-center">
           Awesome ToDo
         </q-toolbar-title>
+
+        <!-- Login button -->
+        <q-btn
+          flat
+          icon-right="account_circle"
+          class="absolute-right"
+          label="Login"
+          to="/auth"
+        />
       </q-toolbar>
     </q-header>
 
+    <!-- Page Footer -->
     <q-footer>
       <q-tabs>
         <q-route-tab
@@ -22,13 +33,16 @@
       </q-tabs>
     </q-footer>
 
+    <!-- Navigation Menu items -->
     <q-drawer
       v-model="leftDrawerOpen"
       :breakpoint="767"
       :width="250"
       bordered
       content-class="bg-primary"
+      show-if-above
     >
+      <!-- Menu List -->
       <q-list dark>
         <q-item-label header>
           Navigation
