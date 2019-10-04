@@ -65,24 +65,30 @@ const mutations = {
 // Can be asynchronous
 // Called by components to modify state
 const actions = {
-  addTask({commit}, task) {
+  addTask({ commit }, task) {
     let taskId = uid()
     let payload = {
       id: taskId,
       task: task
     }
+
+    // Make the actuaL change to the state via the given mutation
     commit('addTask', payload)
   },
-  updateTask({commit}, payload) {
+  updateTask({ commit }, payload) {
+    // Make the actuaL change to the state via the given mutation
     commit('updateTask', payload)
   },
-  deleteTask({commit}, id) {
+  deleteTask({ commit }, id) {
+    // Make the actuaL change to the state via the given mutation
     commit('deleteTask', id)
   },
-  setSearch({commit}, value) {
+  setSearch({ commit }, value) {
+    // Make the actuaL change to the state via the given mutation
     commit('setSearch', value)
   },
-  setSort({commit}, value) {
+  setSort({ commit }, value) {
+    // Make the actuaL change to the state via the given mutation
     commit('setSort', value)
   }
 }

@@ -5,7 +5,10 @@
     leave-active-class="animated zoomOut absolute-top"
   >
     <div>
-      <list-header :bg-color="'bg-secondary'">
+      <list-header
+        v-if="!settings.showTasksInOneList"
+        :bg-color="'bg-secondary'"
+      >
         Todo
       </list-header>
 
@@ -25,6 +28,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     components: {
       'task': require('components/Tasks/Task.vue').default,
@@ -39,6 +44,9 @@
         }
       }
     },
+    computed: {
+      ...mapGetters('settings', ['settings'])
+    }
   }
 </script>
 
