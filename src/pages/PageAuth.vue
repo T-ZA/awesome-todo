@@ -49,7 +49,7 @@
     },
     data() {
       return {
-        tab: 'register'
+        tab: 'login' // Controls the view displayed in the tab panel by its name attribute
       }
     }
   }

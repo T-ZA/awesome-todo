@@ -9,11 +9,22 @@
 
         <!-- Login button -->
         <q-btn
+          v-if="!loggedIn"
           flat
           icon-right="account_circle"
           class="absolute-right"
           label="Login"
           to="/auth"
+        />
+
+        <!-- Logout button -->
+        <q-btn
+          v-else
+          flat
+          icon-right="account_circle"
+          class="absolute-right"
+          label="Logout"
+          @click="logoutUser"
         />
       </q-toolbar>
     </q-header>
@@ -72,6 +83,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import { openURL } from 'quasar';
 
 export default {
@@ -93,7 +105,11 @@ export default {
       ]
     };
   },
+  computed: {
+    ...mapState('auth', ['loggedIn'])
+  },
   methods: {
+    ...mapActions('auth', ['logoutUser']),
     openURL
   }
 };

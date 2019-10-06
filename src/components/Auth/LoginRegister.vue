@@ -59,6 +59,8 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
+
   export default {
     filters: {
       titleCase(value) {
@@ -81,13 +83,14 @@
       }
     },
     methods: {
+      ...mapActions('auth',['registerUser','loginUser']),
       submitForm() {
         // Choose logic to execute based on the current tab
         if (this.tab == 'login') {
-          this.loginUser()
+          this.handleLoginUser()
         }
         else {
-          this.registerUser()
+          this.handleRegisterUser()
         }
       },
       isValidEmailAddress(email) {
@@ -96,11 +99,11 @@
 
         return emailRegex.test(String(email).toLowerCase())
       },
-      loginUser() {
-        console.log('loginUser')
+      handleLoginUser() {
+        this.loginUser(this.formData)
       },
-      registerUser() {
-        console.log('registerUser')
+      handleRegisterUser() {
+        this.registerUser(this.formData)
       }
     }
   }

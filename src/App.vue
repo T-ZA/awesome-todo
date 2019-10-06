@@ -10,9 +10,11 @@ import { mapActions } from 'vuex'
 export default {
   created() {
     this.getSettings()
+    this.handleAuthStateChange()
   },
   methods: {
-    ...mapActions('settings', ['getSettings'])
+    ...mapActions('settings', ['getSettings']),
+    ...mapActions('auth',['handleAuthStateChange'])
   }
 }
 </script>

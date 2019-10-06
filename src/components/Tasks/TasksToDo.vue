@@ -9,7 +9,7 @@
         v-if="!settings.showTasksInOneList"
         :bg-color="'bg-secondary'"
       >
-        Todo
+        ToDo
       </list-header>
 
       <q-list
