@@ -16,22 +16,16 @@ const actions = {
   registerUser({}, payload) {
     LoadingBar.start()
     firebaseAuth.createUserWithEmailAndPassword(payload.email, payload.password)
-    .then((res) => {
-      console.log(`response: ${res}`)
-    })
-    .catch((error) => {
-      showErrorMessage(error.message)
-    })
-    .finally(() => {
-      LoadingBar.stop()
-    })
+      .catch((error) => {
+        showErrorMessage(error.message)
+      })
+      .finally(() => {
+        LoadingBar.stop()
+      })
   },
   loginUser({}, payload) {
     LoadingBar.start()
     firebaseAuth.signInWithEmailAndPassword(payload.email, payload.password)
-      .then((res) => {
-        console.log(`response: ${res}`)
-      })
       .catch((error) => {
         showErrorMessage(error.message)
       })
@@ -45,7 +39,7 @@ const actions = {
         showErrorMessage(error.message)
       })
   },
-  handleAuthStateChange({ commit }) {
+  handleAuthStateChange({ commit, dispatch }) {
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
         commit('setLoggedIn', true)
@@ -54,6 +48,9 @@ const actions = {
         LocalStorage.set('loggedIn', true)
 
         this.$router.push('/')
+
+        // Read data from database into the tasks state module
+        dispatch('tasks/fbReadData', null, { root: true })
       }
       else {
         commit('setLoggedIn', false)

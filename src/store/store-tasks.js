@@ -1,28 +1,11 @@
 import Vue from 'vue'
 import { uid } from 'quasar'
 
+import { firebaseAuth, firebaseDb } from 'boot/firebase'
+
 // Data
 const state = {
-  tasks: {
-    'ID1': {
-      name: 'Task 1',
-      completed: false,
-      dueDate: '2019/08/17',
-      dueTime: '00:00'
-    },
-    'ID2': {
-      name: 'Task 2',
-      completed: false,
-      dueDate: '2019/08/16',
-      dueTime: '06:00'
-    },
-    'ID3': {
-      name: 'Task 3',
-      completed: false,
-      dueDate: '2019/08/15',
-      dueTime: '12:00'
-    },
-  },
+  tasks: {},
   search: '',
   sort: 'name'
 }
@@ -90,6 +73,19 @@ const actions = {
   setSort({ commit }, value) {
     // Make the actuaL change to the state via the given mutation
     commit('setSort', value)
+  },
+  fbReadData({ commit }) {
+    console.log('reading data from Firebase')
+
+    let userId = firebaseAuth.currentUser.uid
+    // console.log(userId)
+    let userTasks = firebaseDb.ref(`tasks/${userId}`)
+    // console.log(userTasks)
+
+    // Triggers on a child being added to the referenced node
+    userTasks.on('child_added', (snapshot) => {
+      console.log(snapshot)
+    })
   }
 }
 
