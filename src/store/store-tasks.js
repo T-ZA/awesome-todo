@@ -1,28 +1,11 @@
 import Vue from 'vue'
 import { uid } from 'quasar'
 
+import { firebaseAuth, firebaseDb } from 'boot/firebase'
+
 // Data
 const state = {
-  tasks: {
-    'ID1': {
-      name: 'Task 1',
-      completed: false,
-      dueDate: '2019/08/17',
-      dueTime: '00:00'
-    },
-    'ID2': {
-      name: 'Task 2',
-      completed: false,
-      dueDate: '2019/08/16',
-      dueTime: '06:00'
-    },
-    'ID3': {
-      name: 'Task 3',
-      completed: false,
-      dueDate: '2019/08/15',
-      dueTime: '12:00'
-    },
-  },
+  tasks: {},
   search: '',
   sort: 'name'
 }
@@ -72,24 +55,78 @@ const actions = {
       task: task
     }
 
-    // Make the actuaL change to the state via the given mutation
+    // Make the actual change to the state via the given mutation
     commit('addTask', payload)
   },
   updateTask({ commit }, payload) {
-    // Make the actuaL change to the state via the given mutation
+    // Make the actual change to the state via the given mutation
     commit('updateTask', payload)
   },
   deleteTask({ commit }, id) {
-    // Make the actuaL change to the state via the given mutation
+    // Make the actual change to the state via the given mutation
     commit('deleteTask', id)
   },
   setSearch({ commit }, value) {
-    // Make the actuaL change to the state via the given mutation
+    // Make the actual change to the state via the given mutation
     commit('setSearch', value)
   },
   setSort({ commit }, value) {
-    // Make the actuaL change to the state via the given mutation
+    // Make the actual change to the state via the given mutation
     commit('setSort', value)
+  },
+  fbReadData({ commit }) {
+    // Get the user ID of the signed in user with the Firebase authentication import
+    let userId = firebaseAuth.currentUser.uid
+
+    // Read the data at the location tasks/userId (key for storing user's tasks)
+    let userTasks = firebaseDb.ref(`tasks/${userId}`)
+
+    /*
+      Firebase Reference Hook: child_added  
+    
+      Triggers on first making a database connection 
+      or on a child being added to the referenced node
+      (adding a new task in Firebase)
+    */
+    userTasks.on('child_added', (snapshot) => {
+      let task = snapshot.val()
+      let payload = {
+        id: snapshot.key,
+        task: task
+      }
+
+      // Make the actual change to the state via the given mutation
+      commit('addTask', payload)
+    })
+
+    /*
+      Firebase Reference Hook: child_changed
+
+      Triggers on a child that is changed
+      (updating a task in Firebase)
+    */
+    userTasks.on('child_changed', (snapshot) => {
+      let task = snapshot.val()
+      let payload = {
+        id: snapshot.key,
+        updates: task
+      }
+
+      // Make the actual change to the state via the given mutation
+      commit('updateTask', payload)
+    })
+
+    /*
+      Firebase Reference Hook: child_added
+
+    */
+    userTasks.on('child_removed', (snapshot) => {
+      let task = snapshot.val()
+      let taskId = snapshot.key
+
+      // Make the actual change to the state via the given mutation
+      commit('deleteTask', taskId)
+    })
   }
 }
 
