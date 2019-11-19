@@ -20,4 +20,3 @@ yarn-error.log*
 *.sln
 
 .quasar.env.json
-src/boot/firebase.js
