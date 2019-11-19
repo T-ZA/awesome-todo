@@ -48,23 +48,23 @@ const mutations = {
 // Can be asynchronous
 // Called by components to modify state
 const actions = {
-  addTask({ commit }, task) {
+  addTask({ dispatch }, task) {
     let taskId = uid()
     let payload = {
       id: taskId,
       task: task
     }
 
-    // Make the actual change to the state via the given mutation
-    commit('addTask', payload)
+    // Use the fbAddTask action to add the created task to Firebase
+    dispatch('fbAddTask', payload)
   },
-  updateTask({ commit }, payload) {
-    // Make the actual change to the state via the given mutation
-    commit('updateTask', payload)
+  updateTask({ dispatch }, payload) {
+    // Use the fbUpdateTask action to update the received task in Firebase
+    dispatch('fbUpdateTask', payload)
   },
-  deleteTask({ commit }, id) {
-    // Make the actual change to the state via the given mutation
-    commit('deleteTask', id)
+  deleteTask({ dispatch }, taskId) {
+    // Use the fbDeleteTask action to delete task with the given ID in Firebase
+    dispatch('fbDeleteTask', taskId)
   },
   setSearch({ commit }, value) {
     // Make the actual change to the state via the given mutation
@@ -117,7 +117,10 @@ const actions = {
     })
 
     /*
-      Firebase Reference Hook: child_added
+      Firebase Reference Hook: child_removed
+
+      Triggers on a child that is removed
+      (deleting a task in Firebase)
 
     */
     userTasks.on('child_removed', (snapshot) => {
@@ -127,6 +130,42 @@ const actions = {
       // Make the actual change to the state via the given mutation
       commit('deleteTask', taskId)
     })
+  },
+  fbAddTask({}, payload) {
+    // Get the user ID of the signed in user with the Firebase authentication import
+    let userId = firebaseAuth.currentUser.uid
+
+    // Get the ID of the task to be added
+    let taskId = payload.id
+    
+    // Get the Firebase Reference for the location the data should be saved
+    let taskRef = firebaseDb.ref(`tasks/${userId}/${taskId}`)
+
+    // Add the data to the Firebase Reference obtained
+    taskRef.set(payload.task)
+  },
+  fbUpdateTask({}, payload) {
+    // Get the user ID of the signed in user with the Firebase authentication import
+    let userId = firebaseAuth.currentUser.uid
+
+    // Get the ID of the task to be added
+    let taskId = payload.id
+    
+    // Get the Firebase Reference for the location the data should be saved
+    let taskRef = firebaseDb.ref(`tasks/${userId}/${taskId}`)
+
+    // Update the data at the Firebase Reference obtained with the payload
+    taskRef.update(payload.updates)
+  },
+  fbDeleteTask({}, taskId) {
+    // Get the user ID of the signed in user with the Firebase authentication import
+    let userId = firebaseAuth.currentUser.uid
+    
+    // Get the Firebase Reference for the location the data should be saved
+    let taskRef = firebaseDb.ref(`tasks/${userId}/${taskId}`)
+
+    // Remove the data at the location of the Firebase Reference
+    taskRef.remove()
   }
 }
 
