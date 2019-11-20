@@ -7,7 +7,8 @@ import { firebaseAuth, firebaseDb } from 'boot/firebase'
 const state = {
   tasks: {},
   search: '',
-  sort: 'name'
+  sort: 'name',
+  tasksDownloaded: false
 }
 
 // Synchronous functions to modify state
@@ -42,6 +43,9 @@ const mutations = {
   },
   setSort(state, value) {
     state.sort = value
+  },
+  setTasksDownloaded(state, value) {
+    state.tasksDownloaded = value
   }
 }
 
@@ -80,6 +84,17 @@ const actions = {
 
     // Read the data at the location tasks/userId (key for storing user's tasks)
     let userTasks = firebaseDb.ref(`tasks/${userId}`)
+
+    /*
+      Firebase Reference Hook: value
+
+      Checks for the value at the utilized Reference.
+      Useful for determining when data is accessible 
+      from a database reference.
+    */
+    userTasks.once('value', (snapshot) => {
+      commit('setTasksDownloaded', true)
+    })
 
     /*
       Firebase Reference Hook: child_added  

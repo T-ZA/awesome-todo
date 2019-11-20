@@ -63,7 +63,8 @@ module.exports = function(ctx) {
         'QToggle',
         'QTabPanels',
         'QTabPanel',
-        'QSeparator'
+        'QSeparator',
+        'QSpinner'
       ],
 
       directives: ['Ripple','ClosePopup','TouchHold'],
@@ -74,7 +75,7 @@ module.exports = function(ctx) {
       config: {
         loadingBar: {
           color: 'accent',
-          size: '6px',
+          size: '4px',
           position: 'top'
         }
       }

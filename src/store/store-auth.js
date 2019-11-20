@@ -42,6 +42,7 @@ const actions = {
   handleAuthStateChange({ commit, dispatch }) {
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
+        // Set logged in state to true on login
         commit('setLoggedIn', true)
 
         // Save login state to local storage to know user state prior to app initialization
@@ -53,6 +54,10 @@ const actions = {
         dispatch('tasks/fbReadData', null, { root: true })
       }
       else {
+        // Stop loading on logout
+        commit('tasks/setTasksDownloaded', false, { root: true })
+        
+        // Set logged in state to false on logout
         commit('setLoggedIn', false)
 
         // Save login state to local storage to know user state prior to app initialization
