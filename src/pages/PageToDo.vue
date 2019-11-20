@@ -1,61 +1,74 @@
 <template>
   <q-page>
-    <div class="absolute fit column q-pa-md">
-      <!-- Search Bar -->
-      <div class="row q-mb-lg">
-        <search />
-        <sort />
+    <!-- Display the tasks interface once all tasks have been downloaded -->
+    <template v-if="tasksDownloaded">
+      <div class="absolute fit column q-pa-md">
+        <!-- Search Bar -->
+        <div class="row q-mb-lg">
+          <search />
+          <sort />
+        </div>
+
+        <!-- No Search Results message -->
+        <div v-if="search && !Object.keys(tasksToDo).length && !Object.keys(tasksCompleted).length">
+          No search results
+        </div>
+
+        <!-- This div is used for positioning the task list components
+          (to do, completed, all tasks message) in the same container
+          so the to do list disappearing will be at the top of the
+          comtainer insterad of the top of the page. -->
+        <q-scroll-area
+          class="relative-position q-scroll-area-tasks"
+        >
+          <!-- All Tasks Completed message -->
+          <no-tasks
+            v-if="!Object.keys(tasksToDo).length && !search && !settings.showTasksInOneList"
+          />
+
+          <!-- Tasks To Do List -->
+          <tasks-todo
+            v-if="Object.keys(tasksToDo).length"
+            :tasks-to-do="tasksToDo"
+          />
+
+
+          <!-- Task Completed list -->
+          <tasks-completed
+            v-if="Object.keys(tasksCompleted).length"
+            :tasks-completed="tasksCompleted"
+            class="q-mb-xl"
+          />
+        </q-scroll-area>
+
+        <!-- Add Task button -->
+        <div class="absolute-bottom text-center q-mb-lg no-pointer-events">
+          <q-btn
+            round
+            color="primary"
+            size="24px"
+            icon="add"
+            class="all-pointer-events"
+            @click="$root.$emit('show-add-task')"
+          />
+        </div>
+
+        <!-- Add Task dialog -->
+        <q-dialog v-model="showAddTask">
+          <add-task @close-add-task="showAddTask = false" />
+        </q-dialog>
       </div>
+    </template>
 
-      <!-- No Search Results message -->
-      <div v-if="search && !Object.keys(tasksToDo).length && !Object.keys(tasksCompleted).length">
-        No search results
-      </div>
-
-      <!-- This div is used for positioning the task list components
-         (to do, completed, all tasks message) in the same container
-         so the to do list disappearing will be at the top of the
-         comtainer insterad of the top of the page. -->
-      <q-scroll-area
-        class="relative-position q-scroll-area-tasks"
-      >
-        <!-- All Tasks Completed message -->
-        <no-tasks
-          v-if="!Object.keys(tasksToDo).length && !search && !settings.showTasksInOneList"
-        />
-
-        <!-- Tasks To Do List -->
-        <tasks-todo
-          v-if="Object.keys(tasksToDo).length"
-          :tasks-to-do="tasksToDo"
-        />
-
-
-        <!-- Task Completed list -->
-        <tasks-completed
-          v-if="Object.keys(tasksCompleted).length"
-          :tasks-completed="tasksCompleted"
-          class="q-mb-xl"
-        />
-      </q-scroll-area>
-
-      <!-- Add Task button -->
-      <div class="absolute-bottom text-center q-mb-lg no-pointer-events">
-        <q-btn
-          round
+    <!-- Otherwise, show the spoinner component to indicate loading -->
+    <!-- <template v-else>
+      <span class="absolute-center">
+        <q-spinner
           color="primary"
-          size="24px"
-          icon="add"
-          class="all-pointer-events"
-          @click="$root.$emit('show-add-task')"
+          size="10em"
         />
-      </div>
-
-      <!-- Add Task dialog -->
-      <q-dialog v-model="showAddTask">
-        <add-task @close-add-task="showAddTask = false" />
-      </q-dialog>
-    </div>
+      </span>
+    </template> -->
   </q-page>
 </template>
 
@@ -79,7 +92,7 @@ export default {
   computed: {
     ...mapGetters('tasks', ['tasksToDo','tasksCompleted']),
     ...mapGetters('settings', ['settings']),
-    ...mapState('tasks', ['search'])
+    ...mapState('tasks', ['search','tasksDownloaded'])
   },
   mounted() {
     // Quasar's Global Event Bus can be used to listen to events by name
