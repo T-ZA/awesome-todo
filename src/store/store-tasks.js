@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { uid } from 'quasar'
 
 import { firebaseAuth, firebaseDb } from 'boot/firebase'
+import { showErrorMessage } from 'src/functions/function-show-error-message'
 
 // Data
 const state = {
@@ -14,6 +15,18 @@ const state = {
 // Synchronous functions to modify state
 const mutations = {
   addTask(state, payload) {
+    /*
+      payload object structure:
+      {
+        id: String,
+        task: {
+          completed: Boolean,
+          name: String,
+          dueDate: String,
+          dueTime: String
+        }
+      }
+    */
     Vue.set(state.tasks, payload.id, payload.task)
   },
   updateTask(state, payload) {
@@ -22,7 +35,10 @@ const mutations = {
       {
         id: String,
         updates: {
-          completed: Boolean
+          completed: Boolean,
+          name: String,
+          dueDate: String,
+          dueTime: String
         }
       }
 
@@ -37,6 +53,9 @@ const mutations = {
   deleteTask(state, id) {
     // Needed to keep Vuex and Vue in sync
     Vue.delete(state.tasks, id)
+  },
+  clearTasks(state) {
+    state.tasks = {}
   },
   setSearch(state, value){
     state.search = value
@@ -81,6 +100,7 @@ const actions = {
   fbReadData({ commit }) {
     // Get the user ID of the signed in user with the Firebase authentication import
     let userId = firebaseAuth.currentUser.uid
+    userId = 'ot119p4PTLbrpC5HHgYYvgODDEm2'
 
     // Read the data at the location tasks/userId (key for storing user's tasks)
     let userTasks = firebaseDb.ref(`tasks/${userId}`)
@@ -94,6 +114,9 @@ const actions = {
     */
     userTasks.once('value', (snapshot) => {
       commit('setTasksDownloaded', true)
+    }, (error) => {
+      console.error(error.message)
+      showErrorMessage('You are not allowed to access another user\'s tasks')
     })
 
     /*
@@ -158,6 +181,10 @@ const actions = {
 
     // Add the data to the Firebase Reference obtained
     taskRef.set(payload.task)
+    .catch((error) => {
+      console.error(error.message)
+      showErrorMessage('You cannot add tasks for another user')
+    })
   },
   fbUpdateTask({}, payload) {
     // Get the user ID of the signed in user with the Firebase authentication import
@@ -171,6 +198,10 @@ const actions = {
 
     // Update the data at the Firebase Reference obtained with the payload
     taskRef.update(payload.updates)
+      .catch((error) => {
+        console.error(error.message)
+        showErrorMessage('You cannot update another user\'s tasks')
+      })
   },
   fbDeleteTask({}, taskId) {
     // Get the user ID of the signed in user with the Firebase authentication import
@@ -181,6 +212,10 @@ const actions = {
 
     // Remove the data at the location of the Firebase Reference
     taskRef.remove()
+      .catch((error) => {
+        console.error(error.message)
+        showErrorMessage('You cannot delete another user\'s tasks')
+      })
   }
 }
 

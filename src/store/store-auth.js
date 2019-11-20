@@ -54,6 +54,9 @@ const actions = {
         dispatch('tasks/fbReadData', null, { root: true })
       }
       else {
+        // Clear current tasks that are in the tasks module state
+        commit('tasks/clearTasks', null, { root: true })
+        
         // Stop loading on logout
         commit('tasks/setTasksDownloaded', false, { root: true })
         
