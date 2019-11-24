@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { uid } from 'quasar'
+import { uid, Notify } from 'quasar'
 
 import { firebaseAuth, firebaseDb } from 'boot/firebase'
 import { showErrorMessage } from 'src/functions/function-show-error-message'
@@ -97,10 +97,9 @@ const actions = {
     // Make the actual change to the state via the given mutation
     commit('setSort', value)
   },
-  fbReadData({ commit }) {
+  fbReadData({ commit, dispatch }) {
     // Get the user ID of the signed in user with the Firebase authentication import
     let userId = firebaseAuth.currentUser.uid
-    userId = 'ot119p4PTLbrpC5HHgYYvgODDEm2'
 
     // Read the data at the location tasks/userId (key for storing user's tasks)
     let userTasks = firebaseDb.ref(`tasks/${userId}`)
@@ -117,6 +116,8 @@ const actions = {
     }, (error) => {
       console.error(error.message)
       showErrorMessage('You are not allowed to access another user\'s tasks')
+      dispatch('auth/logoutUser', null, { root: true })
+      this.$router.replace('/auth')
     })
 
     /*
@@ -181,10 +182,13 @@ const actions = {
 
     // Add the data to the Firebase Reference obtained
     taskRef.set(payload.task)
-    .catch((error) => {
-      console.error(error.message)
-      showErrorMessage('You cannot add tasks for another user')
-    })
+      .then(() => {
+        Notify.create('Task added!')
+      })
+      .catch((error) => {
+        console.error(error.message)
+        showErrorMessage('You cannot add tasks for another user')
+      })
   },
   fbUpdateTask({}, payload) {
     // Get the user ID of the signed in user with the Firebase authentication import
@@ -198,6 +202,18 @@ const actions = {
 
     // Update the data at the Firebase Reference obtained with the payload
     taskRef.update(payload.updates)
+      .then(() => {
+        // Get the keys in the updates object within the payload 
+        // for the task updates to send to Firebase
+        let keys = Object.keys(payload.updates)
+
+        // "keys" will only contain "completed" if the task is simply being marked as done.
+        // So if the list of keys in the updates object is not just "completed" 
+        // and has more than 1 element, then actual task details are being updated. 
+        if (!(keys.includes('completed') && keys.length == 1)) {
+          Notify.create('Task updated!')
+        }
+      })
       .catch((error) => {
         console.error(error.message)
         showErrorMessage('You cannot update another user\'s tasks')
@@ -212,6 +228,9 @@ const actions = {
 
     // Remove the data at the location of the Firebase Reference
     taskRef.remove()
+      .then(() => {
+        Notify.create('Task deleted!')
+      })
       .catch((error) => {
         console.error(error.message)
         showErrorMessage('You cannot delete another user\'s tasks')
