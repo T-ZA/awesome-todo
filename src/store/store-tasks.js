@@ -111,7 +111,7 @@ const actions = {
       Useful for determining when data is accessible 
       from a database reference.
     */
-    userTasks.once('value', (snapshot) => {
+    userTasks.once('value', () => {
       commit('setTasksDownloaded', true)
     }, (error) => {
       console.error(error.message)
@@ -163,7 +163,6 @@ const actions = {
 
     */
     userTasks.on('child_removed', (snapshot) => {
-      let task = snapshot.val()
       let taskId = snapshot.key
 
       // Make the actual change to the state via the given mutation
