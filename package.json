@@ -8,7 +8,10 @@
   "private": true,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
-    "dev": "cross-env QENV=development quasar dev"
+    "lint": "eslint --ext .js,.vue src --fix",
+    "dev": "cross-env QENV=development quasar dev",
+    "build": "quasar build",
+    "deploy": "now"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
@@ -17,7 +20,7 @@
   },
   "devDependencies": {
     "@quasar/app": "^1.0.0",
-    "@quasar/quasar-app-extension-qenv": "^1.0.0-beta.2",
+    "@quasar/quasar-app-extension-icon-genie": "^1.1.2",
     "babel-eslint": "^10.0.3",
     "cross-env": "^6.0.3",
     "eslint": "^6.2.2",

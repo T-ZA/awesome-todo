@@ -3,6 +3,7 @@
 .thumbs.db
 node_modules
 /dist
+/public
 /src-cordova/node_modules
 /src-cordova/platforms
 /src-cordova/plugins
@@ -20,3 +21,4 @@ yarn-error.log*
 *.sln
 
 .quasar.env.json
+.firebase/
