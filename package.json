@@ -11,7 +11,7 @@
     "lint": "eslint --ext .js,.vue src --fix",
     "dev": "cross-env QENV=development quasar dev",
     "build": "quasar build",
-    "deploy": "now"
+    "deploy": "firebase deploy"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
